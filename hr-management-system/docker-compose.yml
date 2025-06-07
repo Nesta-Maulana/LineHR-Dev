@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: hr-management-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - hr-network
+    restart: unless-stopped
+    command: npm run start:dev
+
+  postgres:
+    container_name: hr-postgres
+    image: postgres:16-alpine
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-hr_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hr_password}
+      POSTGRES_DB: ${DB_DATABASE:-hr_management}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./src/config/database.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hr-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-hr_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: hr-redis
+    image: redis:7-alpine
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis-data:/data
+    networks:
+      - hr-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: hr-pgadmin
+    image: dpage/pgadmin4:latest
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@hrmanagement.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    networks:
+      - hr-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  hr-network:
+    driver: bridge

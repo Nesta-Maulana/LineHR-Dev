@@ -1,0 +1,7 @@
+export enum SystemRole {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  HR_ADMIN = 'HR_ADMIN',
+  HR_MANAGER = 'HR_MANAGER',
+  MANAGER = 'MANAGER',
+  EMPLOYEE = 'EMPLOYEE',
+}
