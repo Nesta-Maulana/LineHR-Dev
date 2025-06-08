@@ -63,9 +63,9 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout user' })
   @ApiResponse({ status: 200, description: 'Logout successful' })
-  async logout(@Req() req: Request) {
+  async logout(@Req() req: AuthenticatedRequest) {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    await this.authService.logout(req.user.id, token);
+    await this.authService.logout(req.user.id, token || '');
     return { message: MESSAGES.AUTH.LOGOUT_SUCCESS };
   }
 
@@ -75,7 +75,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout from all devices' })
   @ApiResponse({ status: 200, description: 'Logged out from all devices' })
-  async logoutAll(@Req() req: Request) {
+  async logoutAll(@Req() req: AuthenticatedRequest) {
     await this.authService.logoutAllDevices(req.user.id);
     return { message: 'Logged out from all devices successfully' };
   }
@@ -86,7 +86,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Token refreshed successfully' })
-  async refresh(@Req() req: Request) {
+  async refresh(@Req() req: RefreshTokenRequest) {
     const refreshToken = req.user.refreshToken;
     return await this.authService.refreshTokens(refreshToken);
   }
@@ -97,7 +97,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Change user password' })
   @ApiResponse({ status: 200, description: 'Password changed successfully' })
-  async changePassword(@Body() dto: ChangePasswordDto, @Req() req: Request) {
+  async changePassword(@Body() dto: ChangePasswordDto, @Req() req: AuthenticatedRequest) {
     if (dto.newPassword !== dto.confirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }

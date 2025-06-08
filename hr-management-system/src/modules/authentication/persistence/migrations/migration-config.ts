@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import * as path from 'path';
+import { EnvUtil } from '../../../../shared/utils/env.util';
 
 config();
 
@@ -11,7 +12,7 @@ config();
 export const MigrationDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5432,
+  port: EnvUtil.getInt('DB_PORT', 5432),
   username: process.env.DB_USERNAME || 'hr_user',
   password: process.env.DB_PASSWORD || 'hr_password',
   database: process.env.DB_DATABASE || 'hr_management',

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { LoginDto, RegisterDto } from '../../presentation/dto';
 import { User } from '../../persistence/entities/user.entity';
-import { UnauthorizedException, BusinessException, ValidationException } from '@shared/exceptions';
+import { UnauthorizedException, ValidationException } from '@shared/exceptions';
 import { HashUtil, ValidationUtil } from '@shared/utils';
 import { MESSAGES } from '@shared/constants';
 import { UserStatus } from '@shared/enums';

@@ -89,7 +89,7 @@ export class TokenService {
       throw new BusinessException(MESSAGES.AUTH.TOKEN_INVALID);
     }
 
-    if (DateUtil.isExpired(user.passwordResetExpires)) {
+    if (user.passwordResetExpires && DateUtil.isExpired(user.passwordResetExpires)) {
       throw new BusinessException(MESSAGES.AUTH.TOKEN_EXPIRED);
     }
 

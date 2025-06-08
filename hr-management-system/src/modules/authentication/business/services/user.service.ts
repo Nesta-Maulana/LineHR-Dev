@@ -5,7 +5,6 @@ import { CreateUserDto, UpdateUserDto } from '../../presentation/dto';
 import { ResourceNotFoundException, ConflictException } from '@shared/exceptions';
 import { PaginationQuery, PaginatedResult } from '@shared/types';
 import { UserStatus } from '@shared/enums';
-import { MESSAGES } from '@shared/constants';
 import { CachingService } from '@cross-cutting/caching';
 import { CACHE_TTL } from '@shared/constants';
 
@@ -20,7 +19,7 @@ export class UserService {
 
   async create(data: CreateUserDto | Partial<User>): Promise<User> {
     // Check if email already exists
-    if (await this.userRepository.emailExists(data.email)) {
+    if (data.email && await this.userRepository.emailExists(data.email)) {
       throw new ConflictException(
         'Email already exists',
         'email',
@@ -28,7 +27,7 @@ export class UserService {
     }
 
     // Check if username already exists
-    if (await this.userRepository.usernameExists(data.username)) {
+    if (data.username && await this.userRepository.usernameExists(data.username)) {
       throw new ConflictException(
         'Username already exists',
         'username',

@@ -10,7 +10,7 @@ export const validationConfig: ValidationPipeOptions = {
   validateCustomDecorators: true,
   errorHttpStatusCode: 422,
   exceptionFactory: (errors) => {
-    const formattedErrors = errors.reduce((acc, error) => {
+    const formattedErrors = errors.reduce((acc: Record<string, string[]>, error) => {
       const constraints = error.constraints || {};
       acc[error.property] = Object.values(constraints);
       return acc;

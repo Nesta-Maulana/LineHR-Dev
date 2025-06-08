@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserStatus } from '@shared/enums';
 import { PaginationQuery, PaginatedResult } from '@shared/types';
@@ -62,7 +62,11 @@ export class UserRepository {
 
   async update(id: string, data: Partial<User>): Promise<User> {
     await this.repository.update(id, data);
-    return await this.findById(id);
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error('User not found after update');
+    }
+    return user;
   }
 
   async updateLoginInfo(
@@ -77,7 +81,7 @@ export class UserRepository {
       await this.repository.update(id, {
         lastLoginAt: new Date(),
         loginAttempts: 0,
-        lockedUntil: null,
+        lockedUntil: null as any,
       });
     } else {
       const attempts = user.loginAttempts + 1;

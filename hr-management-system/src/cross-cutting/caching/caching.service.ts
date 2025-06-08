@@ -21,7 +21,7 @@ export class CachingService {
     } catch (error) {
       this.loggingService.error(
         `Error getting cache key ${key}`,
-        error.stack,
+        error instanceof Error ? error.stack : String(error),
         'CachingService',
       );
       return null;
@@ -35,7 +35,7 @@ export class CachingService {
     } catch (error) {
       this.loggingService.error(
         `Error setting cache key ${key}`,
-        error.stack,
+        error instanceof Error ? error.stack : String(error),
         'CachingService',
       );
     }
@@ -48,7 +48,7 @@ export class CachingService {
     } catch (error) {
       this.loggingService.error(
         `Error deleting cache key ${key}`,
-        error.stack,
+        error instanceof Error ? error.stack : String(error),
         'CachingService',
       );
     }
@@ -56,12 +56,25 @@ export class CachingService {
 
   async reset(): Promise<void> {
     try {
-      await this.cacheManager.reset();
+      // The reset method is not available in all cache stores
+      // We'll try to clear all keys instead
+      const store = this.cacheManager.store as any;
+      if (store && typeof store.clear === 'function') {
+        await store.clear();
+      } else if (store && typeof store.reset === 'function') {
+        await store.reset();
+      } else {
+        // Fallback: do nothing if neither method is available
+        this.loggingService.warn(
+          'Cache reset not supported by current cache store',
+          'CachingService',
+        );
+      }
       this.loggingService.debug('Cache reset', 'CachingService');
     } catch (error) {
       this.loggingService.error(
         'Error resetting cache',
-        error.stack,
+        error instanceof Error ? error.stack : String(error),
         'CachingService',
       );
     }
@@ -69,18 +82,27 @@ export class CachingService {
 
   async deletePattern(pattern: string): Promise<void> {
     try {
-      const keys = await this.cacheManager.store.keys(`${pattern}*`);
-      if (keys.length > 0) {
-        await Promise.all(keys.map(key => this.cacheManager.del(key)));
-        this.loggingService.debug(
-          `Deleted ${keys.length} keys matching pattern: ${pattern}`,
+      // Pattern deletion is not supported by all cache stores
+      const store = this.cacheManager.store as any;
+      if (store && typeof store.keys === 'function') {
+        const keys = await store.keys(`${pattern}*`);
+        if (keys.length > 0) {
+          await Promise.all(keys.map((key: string) => this.cacheManager.del(key)));
+          this.loggingService.debug(
+            `Deleted ${keys.length} keys matching pattern: ${pattern}`,
+            'CachingService',
+          );
+        }
+      } else {
+        this.loggingService.warn(
+          'Pattern deletion not supported by current cache store',
           'CachingService',
         );
       }
     } catch (error) {
       this.loggingService.error(
         `Error deleting cache pattern ${pattern}`,
-        error.stack,
+        error instanceof Error ? error.stack : String(error),
         'CachingService',
       );
     }

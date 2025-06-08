@@ -28,8 +28,8 @@ export abstract class BaseController<
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: `Get all ${this.entityName}s` })
-  @ApiResponse({ status: 200, description: `${this.entityName}s retrieved successfully` })
+  @ApiOperation({ summary: 'Get all resources' })
+  @ApiResponse({ status: 200, description: 'Resources retrieved successfully' })
   async findAll(@Query() query: PaginationQuery) {
     return await this.service.findAll(query);
   }
@@ -37,9 +37,9 @@ export abstract class BaseController<
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: `Get ${this.entityName} by ID` })
-  @ApiResponse({ status: 200, description: `${this.entityName} retrieved successfully` })
-  @ApiResponse({ status: 404, description: `${this.entityName} not found` })
+  @ApiOperation({ summary: 'Get resource by ID' })
+  @ApiResponse({ status: 200, description: 'Resource retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Resource not found' })
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.service.findByIdOrFail(id);
   }
@@ -47,8 +47,8 @@ export abstract class BaseController<
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: `Create new ${this.entityName}` })
-  @ApiResponse({ status: 201, description: `${this.entityName} created successfully` })
+  @ApiOperation({ summary: 'Create new resource' })
+  @ApiResponse({ status: 201, description: 'Resource created successfully' })
   async create(@Body() createDto: CreateDto) {
     return await this.service.create(createDto as any);
   }
@@ -56,9 +56,9 @@ export abstract class BaseController<
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: `Update ${this.entityName}` })
-  @ApiResponse({ status: 200, description: `${this.entityName} updated successfully` })
-  @ApiResponse({ status: 404, description: `${this.entityName} not found` })
+  @ApiOperation({ summary: 'Update resource' })
+  @ApiResponse({ status: 200, description: 'Resource updated successfully' })
+  @ApiResponse({ status: 404, description: 'Resource not found' })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateDto,
@@ -69,9 +69,9 @@ export abstract class BaseController<
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: `Delete ${this.entityName}` })
-  @ApiResponse({ status: 200, description: `${this.entityName} deleted successfully` })
-  @ApiResponse({ status: 404, description: `${this.entityName} not found` })
+  @ApiOperation({ summary: 'Delete resource' })
+  @ApiResponse({ status: 200, description: 'Resource deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Resource not found' })
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.service.delete(id);
     return { message: `${this.entityName} deleted successfully` };

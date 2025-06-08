@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import dataSource from '../../ormconfig';
 

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
 import { SessionService } from './session.service';
@@ -13,6 +12,7 @@ import { HashUtil } from '@shared/utils';
 import { MESSAGES } from '@shared/constants';
 import { LoggingService } from '@cross-cutting/logging';
 import { User } from '../../persistence/entities/user.entity';
+import { UserRepository } from '../../persistence/repositories/user.repository';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,6 +23,7 @@ export class AuthenticationService {
     private readonly authValidator: AuthValidator,
     private readonly loggingService: LoggingService,
     private readonly configService: ConfigService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async register(dto: RegisterDto, ipAddress?: string): Promise<AuthResponse> {
@@ -225,9 +226,9 @@ export class AuthenticationService {
   async verifyEmail(token: string): Promise<void> {
     const user = await this.tokenService.verifyEmailVerificationToken(token);
     
-    await this.userService.update(user.id, {
+    await this.userRepository.update(user.id, {
       emailVerified: true,
-      emailVerificationToken: null,
+      emailVerificationToken: null as any,
       status: UserStatus.ACTIVE,
     });
 

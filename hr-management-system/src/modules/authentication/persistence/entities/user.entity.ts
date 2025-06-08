@@ -107,7 +107,7 @@ export class User extends AuditableEntity {
   }
 
   get isLocked(): boolean {
-    return this.lockedUntil && this.lockedUntil > new Date();
+    return this.lockedUntil ? this.lockedUntil > new Date() : false;
   }
 
   @BeforeInsert()

@@ -1,8 +1,9 @@
 import { registerAs } from '@nestjs/config';
+import { EnvUtil } from '@shared/utils/env.util';
 
 export default registerAs('app', () => ({
   environment: process.env.NODE_ENV || 'development',
-  port: parseInt(process.env.APP_PORT, 10) || 3000,
+  port: EnvUtil.getInt('APP_PORT', 3000),
   name: process.env.APP_NAME || 'HR Management System',
   version: process.env.APP_VERSION || '1.0.0',
   
@@ -13,8 +14,8 @@ export default registerAs('app', () => ({
   },
 
   throttle: {
-    ttl: parseInt(process.env.RATE_LIMIT_TTL, 10) || 60,
-    limit: parseInt(process.env.RATE_LIMIT_MAX, 10) || 100,
+    ttl: EnvUtil.getInt('RATE_LIMIT_TTL', 60),
+    limit: EnvUtil.getInt('RATE_LIMIT_MAX', 100),
   },
 
   swagger: {
@@ -26,11 +27,11 @@ export default registerAs('app', () => ({
   },
 
   security: {
-    bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS, 10) || 10,
+    bcryptRounds: EnvUtil.getInt('BCRYPT_ROUNDS', 10),
   },
 
   monitoring: {
     enabled: process.env.MONITORING_ENABLED === 'true',
-    healthCheckTimeout: parseInt(process.env.HEALTH_CHECK_TIMEOUT, 10) || 5000,
+    healthCheckTimeout: EnvUtil.getInt('HEALTH_CHECK_TIMEOUT', 5000),
   },
 }));

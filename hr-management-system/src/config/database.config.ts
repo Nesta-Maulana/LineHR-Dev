@@ -1,11 +1,12 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { EnvUtil } from '@shared/utils/env.util';
 
 const baseConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5432,
+  port: EnvUtil.getInt('DB_PORT', 5432),
   username: process.env.DB_USERNAME || 'hr_user',
   password: process.env.DB_PASSWORD || 'hr_password',
   database: process.env.DB_DATABASE || 'hr_management',
@@ -15,9 +16,9 @@ const baseConfig: DataSourceOptions = {
   migrations: ['dist/**/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations',
   migrationsRun: true,
-  poolSize: parseInt(process.env.DB_POOL_SIZE, 10) || 10,
+  poolSize: EnvUtil.getInt('DB_POOL_SIZE', 10),
   extra: {
-    max: parseInt(process.env.DB_POOL_SIZE, 10) || 10,
+    max: EnvUtil.getInt('DB_POOL_SIZE', 10),
     connectionTimeoutMillis: 10000,
     idleTimeoutMillis: 30000,
     statementTimeout: 30000,
