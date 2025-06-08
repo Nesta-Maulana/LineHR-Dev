@@ -58,7 +58,7 @@ export class CachingService {
     try {
       // The reset method is not available in all cache stores
       // We'll try to clear all keys instead
-      const store = this.cacheManager.store as any;
+      const store = (this.cacheManager as any).store || (this.cacheManager as any).stores?.[0];
       if (store && typeof store.clear === 'function') {
         await store.clear();
       } else if (store && typeof store.reset === 'function') {
@@ -83,7 +83,7 @@ export class CachingService {
   async deletePattern(pattern: string): Promise<void> {
     try {
       // Pattern deletion is not supported by all cache stores
-      const store = this.cacheManager.store as any;
+      const store = (this.cacheManager as any).store || (this.cacheManager as any).stores?.[0];
       if (store && typeof store.keys === 'function') {
         const keys = await store.keys(`${pattern}*`);
         if (keys.length > 0) {

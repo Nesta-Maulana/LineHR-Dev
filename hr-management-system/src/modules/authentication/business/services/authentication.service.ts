@@ -45,7 +45,7 @@ export class AuthenticationService {
     });
 
     // Generate verification token
-    const verificationToken = await this.tokenService.generateEmailVerificationToken(user.id);
+    await this.tokenService.generateEmailVerificationToken(user.id);
 
     // Log registration event
     this.loggingService.logBusinessEvent('user_registered', {
@@ -67,7 +67,7 @@ export class AuthenticationService {
     const user = await this.authValidator.validateLogin(dto);
 
     // Update login info
-    await this.userService.updateLoginInfo(user.id, true, ipAddress);
+    await this.userService.updateLoginInfo(user.id, true);
 
     // Generate tokens
     const tokens = await this.tokenService.generateTokenPair(user);
@@ -163,7 +163,7 @@ export class AuthenticationService {
       this.configService.get('BCRYPT_ROUNDS', 10),
     );
     
-    await this.userService.update(userId, {
+    await this.userRepository.update(userId, {
       passwordHash: newPasswordHash,
     });
 
@@ -184,7 +184,7 @@ export class AuthenticationService {
       return;
     }
 
-    const resetToken = await this.tokenService.generatePasswordResetToken(user.id);
+    await this.tokenService.generatePasswordResetToken(user.id);
     
     this.loggingService.logSecurityEvent(
       'password_reset_requested',
@@ -207,10 +207,10 @@ export class AuthenticationService {
       this.configService.get('BCRYPT_ROUNDS', 10),
     );
     
-    await this.userService.update(user.id, {
+    await this.userRepository.update(user.id, {
       passwordHash,
-      passwordResetToken: null,
-      passwordResetExpires: null,
+      passwordResetToken: null as any,
+      passwordResetExpires: null as any,
     });
 
     // Invalidate all sessions

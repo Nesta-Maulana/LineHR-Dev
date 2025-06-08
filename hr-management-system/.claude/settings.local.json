@@ -17,7 +17,12 @@
       "Bash(docker logs:*)",
       "Bash(cat:*)",
       "Bash(pkill:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(test:*)",
+      "Bash(ls:*)",
+      "Bash(docker exec:*)",
+      "Bash(npm run seed:admin:*)",
+      "Bash(npm rebuild:*)"
     ],
     "deny": []
   }

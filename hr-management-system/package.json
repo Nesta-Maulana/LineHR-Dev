@@ -27,6 +27,7 @@
     "migration:check": "ts-node src/scripts/check-migrations.ts",
     "migration:run:script": "ts-node src/scripts/run-migrations.ts",
     "seed:run": "ts-node src/database/seeds/run-seed.ts",
+    "seed:admin": "ts-node src/scripts/seed-admin.ts",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f app"

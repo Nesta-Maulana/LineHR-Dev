@@ -109,9 +109,8 @@ export class UserService {
   async updateLoginInfo(
     id: string,
     success: boolean,
-    ipAddress?: string,
   ): Promise<void> {
-    await this.userRepository.updateLoginInfo(id, success, ipAddress);
+    await this.userRepository.updateLoginInfo(id, success);
     await this.invalidateUserCache(id);
   }
 

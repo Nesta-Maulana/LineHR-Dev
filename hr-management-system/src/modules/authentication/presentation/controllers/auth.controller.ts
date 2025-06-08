@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthenticationService } from '../../business/services/authentication.service';
+import { AuthenticatedRequest, RefreshTokenRequest } from '@shared/types';
 import {
   LoginDto,
   RegisterDto,

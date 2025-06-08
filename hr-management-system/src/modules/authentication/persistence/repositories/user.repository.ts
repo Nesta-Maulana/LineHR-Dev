@@ -72,7 +72,6 @@ export class UserRepository {
   async updateLoginInfo(
     id: string,
     success: boolean,
-    ipAddress?: string,
   ): Promise<void> {
     const user = await this.findById(id);
     if (!user) return;
