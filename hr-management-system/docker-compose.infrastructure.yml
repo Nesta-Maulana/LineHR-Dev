@@ -1,29 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: hr-management-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    ports:
-      - '${PORT:-3000}:3000'
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - NODE_ENV=development
-      - DB_HOST=postgres
-      - REDIS_HOST=redis
-    volumes:
-      - .:/app
-      - /app/node_modules
-    networks:
-      - hr-network
-    restart: unless-stopped
-    command: npm run start:dev
-
   postgres:
     container_name: hr-postgres
     image: postgres:16-alpine
@@ -50,7 +27,7 @@ services:
     image: redis:7-alpine
     ports:
       - '${REDIS_PORT:-6379}:6379'
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
     networks:
